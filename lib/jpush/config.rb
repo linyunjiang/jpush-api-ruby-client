@@ -10,7 +10,7 @@ module JPush
       valid_platform: ['android', 'ios']
     }
 
-    # attr_reader :settings
+    attr_reader :settings
 
     def init(app_key, master_secret)
       init_settings = InitSettings.new(app_key, master_secret)
