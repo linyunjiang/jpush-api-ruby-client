@@ -10,11 +10,21 @@ module JPush
       valid_platform: ['android', 'ios']
     }
 
-    attr_reader :settings
+    # attr_reader :settings
 
     def init(app_key, master_secret)
-      @settings = DEFAULT_OPTIONS.merge!(app_key: app_key, master_secret: master_secret)
+      init_settings = InitSettings.new(app_key, master_secret)
+      @settings = init_settings.get_settings
     end
 
+    class InitSettings
+      def initialize(app_key, master_secret)
+        @settings = DEFAULT_OPTIONS.merge!(app_key: app_key, master_secret: master_secret)
+      end
+
+      def get_settings
+        @settings
+      end
+    end
   end
 end
