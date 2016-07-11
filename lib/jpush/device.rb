@@ -11,8 +11,8 @@ module JPush
     # 获取当前设备的所有属性
     def show(registration_id)
       check_registration_id(registration_id)
-      url = base_url + registration_id
-      Http::Client.get(url)
+      url = @base_url + registration_id
+      Http::Client.get(@config_settings, url)
     end
 
     # POST /v3/devices/{registration_id}
@@ -38,8 +38,8 @@ module JPush
 
       raise Utils::Exceptions::JPushError, 'Devices update body can not be empty' if body.empty?
 
-      url = base_url + registration_id
-      Http::Client.post(url, body: body)
+      url = @base_url + registration_id
+      Http::Client.post(@config_settings, url, body: body)
     end
 
     # 下面两个方法接受一个参数,其类型为数组或字符串
@@ -71,17 +71,17 @@ module JPush
     # POST /v3/devices/status/
     def status(registration_ids)
       registration_ids = build_registration_ids(registration_ids)
-      url = base_url + 'status'
+      url = @base_url + 'status'
       body = { registration_ids: registration_ids }
-      Http::Client.post(url, body: body)
+      Http::Client.post(@config_settings, url, body: body)
     end
 
-    private
+    # private
 
-      def base_url
-        Config.settings[:device_api_host] + Config.settings[:api_version] + '/devices/'
-      end
-
+    def base_url(settings)
+      @config_settings = settings
+      @base_url = settings[:device_api_host] + settings[:api_version] + '/devices/'
+    end
   end
 
 
@@ -93,8 +93,8 @@ module JPush
     # GET /v3/tags/
     # 获取当前应用的所有标签列表。
     def list
-      url = base_url
-      Http::Client.get(url)
+      url = @base_url
+      Http::Client.get(@config_settings, url)
     end
 
     # GET /v3/tags/{tag_value}/registration_ids/{registration_id}
@@ -102,8 +102,8 @@ module JPush
     def has_device?(tag_value, registration_id)
       check_registration_id(registration_id)
       check_tag(tag_value)
-      url = base_url + "#{tag_value}/registration_ids/#{registration_id}"
-      Http::Client.get(url)
+      url = @base_url + "#{tag_value}/registration_ids/#{registration_id}"
+      Http::Client.get(@config_settings, url)
     end
 
     # POST /v3/tags/{tag_value}
@@ -118,8 +118,8 @@ module JPush
       raise Utils::Exceptions::JPushError, 'Tags update body can not be empty.' if registration_ids.empty?
 
       body = { registration_ids: registration_ids }
-      url = base_url + tag_value
-      Http::Client.post(url, body: body)
+      url = @base_url + tag_value
+      Http::Client.post(@config_settings, url, body: body)
     end
 
     # 下面两个方法接受一个参数,其类型为数组或字符串
@@ -136,15 +136,16 @@ module JPush
     def delete(tag_value, platform = nil)
       check_tag(tag_value)
       params = platform.nil? ? nil : { platform: build_platform(platform) }
-      url = base_url + tag_value
-      Http::Client.delete(url, params: params)
+      url = @base_url + tag_value
+      Http::Client.delete(@config_settings, url, params: params)
     end
 
-    private
+    # private
 
-      def base_url
-        Config.settings[:device_api_host] + Config.settings[:api_version] + '/tags/'
-      end
+    def base_url(settings)
+      @config_settings = settings
+      @base_url = @config_settings[:device_api_host] + @config_settings[:api_version] + '/tags/'
+    end
 
   end
 
@@ -158,8 +159,8 @@ module JPush
     def show(alias_value, platform = nil)
       check_alias(alias_value)
       params = platform.nil? ? nil : { platform: build_platform(platform) }
-      url = base_url + alias_value
-      Http::Client.get(url, params: params)
+      url = @base_url + alias_value
+      Http::Client.get(@config_settings, url, params: params)
     end
 
     # DELETE /v3/aliases/{alias_value}
@@ -167,16 +168,16 @@ module JPush
     def delete(alias_value, platform = nil)
       check_alias(alias_value)
       params = platform.nil? ? nil : { platform: build_platform(platform) }
-      url = base_url + alias_value
-      Http::Client.delete(url, params: params)
+      url = @base_url + alias_value
+      Http::Client.delete(@config_settings, url, params: params)
     end
 
-    private
+    # private
 
-      def base_url
-        Config.settings[:device_api_host] + Config.settings[:api_version] + '/aliases/'
-      end
-
+    def base_url(settings)
+      @config_settings = settings
+      @base_url = settings[:device_api_host] + settings[:api_version] + '/aliases/'
+    end
   end
 
 end

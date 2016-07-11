@@ -25,7 +25,7 @@ module JPush
         'connection' => 'close'
       }
 
-      def initialize(method, url, params: nil, body: nil, headers: {}, opts: {})
+      def initialize(settings, method, url, params: nil, body: nil, headers: {}, opts: {})
         method = method.downcase.to_sym
         err_msg = "http method #{method} is not supported"
         raise Utils::Exceptions::JPushError, err_msg unless HTTP_VERB_MAP.keys.include?(method)
@@ -33,6 +33,7 @@ module JPush
         @uri.query = URI.encode_www_form(params) unless params.nil?
         @request = prepare_request(method, body, headers)
         @opts = opts
+        @settings = settings
       end
 
       def send_request
@@ -47,8 +48,8 @@ module JPush
       end
 
       def basic_auth(user = nil, password = nil)
-        user ||= Config.settings[:app_key]
-        password ||= Config.settings[:master_secret]
+        user ||= @settings[:app_key]
+        password ||= @settings[:master_secret]
         @request.basic_auth(user, password)
         self
       end

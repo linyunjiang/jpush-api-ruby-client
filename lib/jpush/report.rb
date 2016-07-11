@@ -14,22 +14,22 @@ module JPush
     # 送达统计
     def received(msg_ids)
       msg_ids = build_msg_ids(msg_ids)
-      url = base_url + '/received'
+      url = @base_url + '/received'
       params = {
         msg_ids: msg_ids.join(',')
       }
-      Http::Client.get(url, params: params)
+      Http::Client.get(@config_settings, url, params: params)
     end
 
     # GET /v3/messages
     # 消息统计
     def messages(msg_ids)
       msg_ids = build_msg_ids(msg_ids)
-      url = base_url + '/messages'
+      url = @base_url + '/messages'
       params = {
         msg_ids: msg_ids.join(',')
       }
-      Http::Client.get(url, params: params)
+      Http::Client.get(@config_settings, url, params: params)
     end
 
     # GET /v3/users
@@ -43,15 +43,16 @@ module JPush
         start: start,
         duration: duration
       }
-      url = base_url + '/users'
-      Http::Client.get(url, params: params)
+      url = @base_url + '/users'
+      Http::Client.get(@config_settings, url, params: params)
+    end
+
+    def base_url(settings)
+      @config_settings = settings
+      @base_url = settings[:report_api_host] + settings[:api_version]
     end
 
     private
-
-      def base_url
-        Config.settings[:report_api_host] + Config.settings[:api_version]
-      end
 
       def build_duration(time_unit, duration)
         return 1 if duration < 0

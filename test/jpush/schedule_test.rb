@@ -6,12 +6,10 @@ module JPush
     def setup
       @push_payload = Push::PushPayload.new(platform: 'all', audience: 'all', notification: 'hello from schedule api')
       @schedule_payload = Schedule::SchedulePayload.new('jpush', Time.new(2020), @push_payload)
-      @pusher = @@jpush.pusher
-      @schedules = @@jpush.schedules
     end
 
     def test_create
-      response = @schedules.create(@schedule_payload)
+      response = @@jpush.schedules.create(@schedule_payload)
       assert_equal 200, response.http_code
       body = response.body
       assert_equal 2, body.size
@@ -19,7 +17,7 @@ module JPush
     end
 
     def test_tasks
-      response = @schedules.tasks
+      response = @@jpush.schedules.tasks
       assert_equal 200, response.http_code
       assert_instance_of Hash, response.body
       assert_equal 4, response.body.size
@@ -27,11 +25,11 @@ module JPush
 
     def test_show
       assert_raises Utils::Exceptions::JPushResponseError do
-        @schedules.show('INVALID_SCHEDULE_ID')
+        @@jpush.schedules.show('INVALID_SCHEDULE_ID')
       end
 
-      schedule_id = @schedules.tasks.body['schedules'].first['schedule_id']
-      response = @schedules.show(schedule_id)
+      schedule_id = @@jpush.schedules.tasks.body['schedules'].first['schedule_id']
+      response = @@jpush.schedules.show(schedule_id)
       assert_equal 200, response.http_code
       body = response.body
       assert_equal 5, body.size
@@ -39,16 +37,16 @@ module JPush
 
     def test_update
       assert_raises  JPush::Utils::Exceptions::JPushResponseError do
-        @schedules.update('INVALID_SCHEDULE_ID', name: 'jpush_ruby')
+        @@jpush.schedules.update('INVALID_SCHEDULE_ID', name: 'jpush_ruby')
       end
-      schedule_id = @schedules.tasks.body['schedules'].first['schedule_id']
-      response = @schedules.update(schedule_id, name: 'jpush_ruby')
+      schedule_id = @@jpush.schedules.tasks.body['schedules'].first['schedule_id']
+      response = @@jpush.schedules.update(schedule_id, name: 'jpush_ruby')
       assert_equal 200, response.http_code
     end
 
     def test_delete
-      schedule_id = @schedules.tasks.body['schedules'].first['schedule_id']
-      response = @schedules.delete(schedule_id)
+      schedule_id = @@jpush.schedules.tasks.body['schedules'].first['schedule_id']
+      response = @@jpush.schedules.delete(schedule_id)
       assert_equal 200, response.http_code
     end
 

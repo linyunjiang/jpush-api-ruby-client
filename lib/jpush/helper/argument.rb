@@ -31,7 +31,7 @@ module JPush
       end
 
       def check_platform(platform)
-        valid_platform = JPush::Config.settings[:valid_platform]
+        valid_platform = JPush::Config.valid_platform
         raise Utils::Exceptions::InvalidElementError.new('platform', platform, valid_platform) unless valid_platform.include?(platform)
       end
 

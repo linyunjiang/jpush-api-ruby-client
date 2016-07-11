@@ -4,20 +4,17 @@ module JPush
   class ReportTest < JPush::Test
 
     def setup
-      pusher = @@jpush.pusher
       push_payload = Push::PushPayload.new(platform: 'all', audience: 'all', notification: 'hello from report api')
-      @msg_id = pusher.push(push_payload).body['msg_id']
+      @msg_id = @@jpush.pusher.push(push_payload).body['msg_id']
       sleep $test_report_delay_time
-
-      @reporter = @@jpush.reporter
     end
 
     def test_received
-      @reporter.received(@msg_id)
-      @reporter.received(@msg_id)
+      @@jpush.reporter.received(@msg_id)
+      @@jpush.reporter.received(@msg_id)
       sleep $test_report_delay_time
 
-      response = @reporter.received(@msg_id)
+      response = @@jpush.reporter.received(@msg_id)
       assert_equal 200, response.http_code
 
       body = response.body
@@ -31,7 +28,7 @@ module JPush
     end
 
     def test_messages
-      response = @reporter.messages(@msg_id)
+      response = @@jpush.reporter.messages(@msg_id)
       assert_equal 200, response.http_code
 
       body = response.body
@@ -50,7 +47,7 @@ module JPush
     end
 
     def test_users
-      response = @reporter.users('day', Time.now - 60*60*24, 1)
+      response = @@jpush.reporter.users('day', Time.now - 60*60*24, 1)
       assert_equal 200, response.http_code
 
       body = response.body
@@ -67,14 +64,14 @@ module JPush
 
       start = Time.new(2016, 2, 20, 4)
 
-      response = @reporter.users('month', start, 2)
+      response = @@jpush.reporter.users('month', start, 2)
       assert_equal 200, response.http_code
       body = response.body
       assert_equal 'MONTH', body['time_unit']
       assert_equal 2, body['duration']
       assert_equal 2, body['items'].size
 
-      response = @reporter.users('hour', start, 40)
+      response = @@jpush.reporter.users('hour', start, 40)
       assert_equal 200, response.http_code
       body = response.body
       assert_equal 'HOUR', body['time_unit']

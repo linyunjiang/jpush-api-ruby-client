@@ -3,12 +3,8 @@ require 'test_helper'
 module JPush
   class TagTest < JPush::Test
 
-    def setup
-      @tags = @@jpush.tags
-    end
-
     def test_list
-      response = @tags.list
+      response = @@jpush.tags.list
       assert_equal 200, response.http_code
 
       body = response.body
@@ -19,10 +15,10 @@ module JPush
 
     def test_tag_has_device_with_invalid_argument
       assert_raises Utils::Exceptions::JPushResponseError do
-        @tags.has_device?($test_common_tag, 'INVALID_REGISTRATION_ID')
+        @@jpush.tags.has_device?($test_common_tag, 'INVALID_REGISTRATION_ID')
       end
 
-      response = @tags.has_device?('INVALID_TAG', $test_common_registration_id)
+      response = @@jpush.tags.has_device?('INVALID_TAG', $test_common_registration_id)
       assert_equal 200, response.http_code
       body = response.body
       assert_true body.has_key?('result')
@@ -30,7 +26,7 @@ module JPush
     end
 
     def test_tag_has_device
-      response = @tags.has_device?($test_common_tag, $test_common_registration_id)
+      response = @@jpush.tags.has_device?($test_common_tag, $test_common_registration_id)
       assert_equal 200, response.http_code
 
       body = response.body
@@ -40,56 +36,56 @@ module JPush
 
     def test_update
       assert_raises Utils::Exceptions::JPushError do
-        @tags.update($test_common_tag)
+        @@jpush.tags.update($test_common_tag)
       end
     end
 
     def test_add_and_remove_devices
-      body = @tags.has_device?($test_common_tag, $test_common2_registration_id).body
+      body = @@jpush.tags.has_device?($test_common_tag, $test_common2_registration_id).body
       assert_false body['result']
 
-      response = @tags.add_devices($test_common_tag, $test_common2_registration_id)
+      response = @@jpush.tags.add_devices($test_common_tag, $test_common2_registration_id)
       assert_equal 200, response.http_code
 
-      body = @tags.has_device?($test_common_tag, $test_common2_registration_id).body
+      body = @@jpush.tags.has_device?($test_common_tag, $test_common2_registration_id).body
       assert_true body['result']
 
-      response = @tags.remove_devices($test_common_tag, $test_common2_registration_id)
+      response = @@jpush.tags.remove_devices($test_common_tag, $test_common2_registration_id)
       assert_equal 200, response.http_code
 
-      body = @tags.has_device?($test_common_tag, $test_common2_registration_id).body
+      body = @@jpush.tags.has_device?($test_common_tag, $test_common2_registration_id).body
       assert_false body['result']
     end
 
     def test_update_with_invalid_tag_value
       invalid_tag = 'INVALID_TAG'
 
-      body = @tags.has_device?(invalid_tag, $test_common_registration_id).body
+      body = @@jpush.tags.has_device?(invalid_tag, $test_common_registration_id).body
       assert_false body['result']
 
       body = tags_list_body
       before_tag_len = body['tags'].length
 
-      response = @tags.add_devices(invalid_tag, $test_common_registration_id)
+      response = @@jpush.tags.add_devices(invalid_tag, $test_common_registration_id)
       assert_equal 200, response.http_code
 
       body = tags_list_body
       after_tag_len = body['tags'].length
 
-      body = @tags.has_device?(invalid_tag, $test_common_registration_id).body
+      body = @@jpush.tags.has_device?(invalid_tag, $test_common_registration_id).body
       assert_true body['result']
       assert_equal 1, after_tag_len - before_tag_len
 
-      @tags.delete(invalid_tag)
+      @@jpush.tags.delete(invalid_tag)
 
       body = tags_list_body
       final_tag_len = body['tags'].length
       assert_equal before_tag_len, final_tag_len
 
-      response = @tags.remove_devices(invalid_tag, $test_common_registration_id)
+      response = @@jpush.tags.remove_devices(invalid_tag, $test_common_registration_id)
       assert_equal 200, response.http_code
 
-      body = @tags.has_device?(invalid_tag, $test_common_registration_id).body
+      body = @@jpush.tags.has_device?(invalid_tag, $test_common_registration_id).body
       assert_false body['result']
 
       body = tags_list_body
@@ -99,10 +95,10 @@ module JPush
 
     def test_update_with_invalid_registration_id
       assert_raises Utils::Exceptions::JPushResponseError do
-        @tags.add_devices($test_common_tag, 'INVALID_REGISTRATION_ID')
+        @@jpush.tags.add_devices($test_common_tag, 'INVALID_REGISTRATION_ID')
       end
       assert_raises Utils::Exceptions::JPushResponseError do
-        @tags.remove_devices($test_common_tag, 'INVALID_REGISTRATION_ID')
+        @@jpush.tags.remove_devices($test_common_tag, 'INVALID_REGISTRATION_ID')
       end
     end
 
@@ -110,7 +106,7 @@ module JPush
       body = tags_list_body
       before_tag_len = body['tags'].length
 
-      response = @tags.delete('INVALID_TAG')
+      response = @@jpush.tags.delete('INVALID_TAG')
       assert_equal 200, response.http_code
 
       body = tags_list_body
@@ -124,7 +120,7 @@ module JPush
       before_tag_len = body['tags'].length
       assert_true body['tags'].include?($test_common_tag)
 
-      response = @tags.delete($test_common_tag)
+      response = @@jpush.tags.delete($test_common_tag)
       assert_equal 200, response.http_code
 
       body = tags_list_body
@@ -132,32 +128,31 @@ module JPush
       assert_false body['tags'].include?($test_common_tag)
       assert_equal 1, before_tag_len  - after_tag_len
 
-      @tags.add_devices($test_common_tag, $test_common_registration_id)
+      @@jpush.tags.add_devices($test_common_tag, $test_common_registration_id)
 
       body = tags_list_body
       final_tag_len = body['tags'].length
       assert_true body['tags'].include?($test_common_tag)
       assert_equal before_tag_len, final_tag_len
 
-      body = @tags.has_device?($test_common_tag, $test_common_registration_id).body
+      body = @@jpush.tags.has_device?($test_common_tag, $test_common_registration_id).body
       assert_true body['result']
     end
 
     def test_delete_tag_with_platform
-      response = @tags.delete($test_common_tag, 'android')
+      response = @@jpush.tags.delete($test_common_tag, 'android')
       assert_equal 200, response.http_code
-      @tags.add_devices($test_common_tag, $test_common_registration_id)
+      @@jpush.tags.add_devices($test_common_tag, $test_common_registration_id)
 
-      response = @tags.delete($test_common_tag, ['android', 'ios'])
+      response = @@jpush.tags.delete($test_common_tag, ['android', 'ios'])
       assert_equal 200, response.http_code
-      @tags.add_devices($test_common_tag, $test_common_registration_id)
+      @@jpush.tags.add_devices($test_common_tag, $test_common_registration_id)
     end
 
     private
 
     def tags_list_body
-      @tags.list.body
+      @@jpush.tags.list.body
     end
-
   end
 end

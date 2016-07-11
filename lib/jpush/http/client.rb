@@ -5,24 +5,25 @@ module JPush
     module Client
       extend self
 
-      def get(url, params: nil, headers: {})
-        send_request(:get, url, params: params, headers: headers)
+      def get(settings, url, params: nil, headers: {})
+        send_request(settings, :get, url, params: params, headers: headers)
       end
 
-      def post(url, body: , headers: {})
-        send_request(:post, url, body: body, headers: headers)
+      def post(settings, url, body: , headers: {})
+        send_request(settings, :post, url, body: body, headers: headers)
       end
 
-      def put(url, body: , headers: {})
-        send_request(:put, url, body: body, headers: headers)
+      def put(settings, url, body: , headers: {})
+        send_request(settings, :put, url, body: body, headers: headers)
       end
 
-      def delete(url, params: nil, headers: {})
-        send_request(:delete, url, params: params, headers: headers)
+      def delete(settings, url, params: nil, headers: {})
+        send_request(settings, :delete, url, params: params, headers: headers)
       end
 
-      def send_request(method, url, params: nil, body: nil, headers: {}, opts: {})
+      def send_request(settings, method, url, params: nil, body: nil, headers: {}, opts: {})
         raw_response = Utils::Http.new(
+          settings,
           method.to_sym,
           url,
           params: params,

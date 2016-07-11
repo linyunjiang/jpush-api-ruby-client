@@ -3,12 +3,8 @@ require 'test_helper'
 module JPush
   class DeviceTest < JPush::Test
 
-    def setup
-      @devices = @@jpush.devices
-    end
-
     def test_show
-      response = @devices.show($test_common_registration_id)
+      response = @@jpush.devices.show($test_common_registration_id)
       assert_equal 200, response.http_code
 
       body = response.body
@@ -20,13 +16,13 @@ module JPush
 
     def test_show_with_invalid_registration_id
       assert_raises Utils::Exceptions::JPushResponseError do
-        response = @devices.show('INVALID_REGISTRATION_ID')
+        response = @@jpush.devices.show('INVALID_REGISTRATION_ID')
       end
     end
 
     def test_update
       assert_raises Utils::Exceptions::JPushError do
-        @devices.update($test_common_registration_id)
+        @@jpush.devices.update($test_common_registration_id)
       end
     end
 
@@ -34,13 +30,13 @@ module JPush
       body = device_body($test_common2_registration_id)
       assert_false body['tags'].include?($test_common_tag)
 
-      response = @devices.add_tags($test_common2_registration_id, $test_common_tag)
+      response = @@jpush.devices.add_tags($test_common2_registration_id, $test_common_tag)
       assert_equal 200, response.http_code
 
       body = device_body($test_common2_registration_id)
       assert_true body['tags'].include?($test_common_tag)
 
-      response = @devices.remove_tags($test_common2_registration_id, $test_common_tag)
+      response = @@jpush.devices.remove_tags($test_common2_registration_id, $test_common_tag)
       assert_equal 200, response.http_code
 
       body = device_body($test_common2_registration_id)
@@ -57,7 +53,7 @@ module JPush
       body = device_body($test_common_registration_id)
       assert_false body['tags'].include?(invalid_tag)
 
-      response = @devices.add_tags($test_common_registration_id, invalid_tag)
+      response = @@jpush.devices.add_tags($test_common_registration_id, invalid_tag)
       assert_equal 200, response.http_code
 
       body = device_body($test_common_registration_id)
@@ -88,7 +84,7 @@ module JPush
       assert_false body['tags'].include?(invalid_tag)
       before_tag_len = body['tags'].length
 
-      response = @devices.remove_tags($test_common_registration_id, invalid_tag)
+      response = @@jpush.devices.remove_tags($test_common_registration_id, invalid_tag)
       assert_equal 200, response.http_code
 
       body = device_body($test_common_registration_id)
@@ -100,10 +96,10 @@ module JPush
 
     def test_add_and_remove_tags_with_invalid_registration_id
       assert_raises Utils::Exceptions::JPushResponseError do
-        @devices.add_tags('INVALID_REGISTRATION_ID', $test_common_tag)
+        @@jpush.devices.add_tags('INVALID_REGISTRATION_ID', $test_common_tag)
       end
       assert_raises Utils::Exceptions::JPushResponseError do
-        @devices.remove_tags('INVALID_REGISTRATION_ID', $test_common_tag)
+        @@jpush.devices.remove_tags('INVALID_REGISTRATION_ID', $test_common_tag)
       end
     end
 
@@ -111,12 +107,12 @@ module JPush
       body = device_body($test_common2_registration_id)
       assert_false body['tags'].include?($test_common_tag)
 
-      @devices.add_tags($test_common2_registration_id, $test_common_tag)
+      @@jpush.devices.add_tags($test_common2_registration_id, $test_common_tag)
 
       body = device_body($test_common2_registration_id)
       assert_true body['tags'].include?($test_common_tag)
 
-      response = @devices.clear_tags($test_common2_registration_id)
+      response = @@jpush.devices.clear_tags($test_common2_registration_id)
       assert_equal 200, response.http_code
 
       body = device_body($test_common2_registration_id)
@@ -128,20 +124,20 @@ module JPush
       body = device_body($test_common_registration_id)
       origin_alias = body['alias']
 
-      response = @devices.update_alias($test_common_registration_id, 'JPUSH')
+      response = @@jpush.devices.update_alias($test_common_registration_id, 'JPUSH')
       assert_equal 200, response.http_code
 
       body = device_body($test_common_registration_id)
       assert_equal 'JPUSH', body['alias']
 
-      response = @devices.delete_alias($test_common_registration_id)
+      response = @@jpush.devices.delete_alias($test_common_registration_id)
       assert_equal 200, response.http_code
 
       body = device_body($test_common_registration_id)
       assert_nil body['alias']
 
       unless origin_alias.nil?
-        response = @devices.update_alias($test_common_registration_id, origin_alias)
+        response = @@jpush.devices.update_alias($test_common_registration_id, origin_alias)
         assert_equal 200, response.http_code
 
         body = device_body($test_common_registration_id)
@@ -153,13 +149,13 @@ module JPush
       body = device_body($test_common_registration_id)
       origin_mobile = body['mobile'] || 13888888888
 
-      response = @devices.update_mobile($test_common_registration_id, '13800138000')
+      response = @@jpush.devices.update_mobile($test_common_registration_id, '13800138000')
       assert_equal 200, response.http_code
 
       body = device_body($test_common_registration_id)
       assert_equal 13800138000, body['mobile']
 
-      response = @devices.update_mobile($test_common_registration_id, origin_mobile.to_s)
+      response = @@jpush.devices.update_mobile($test_common_registration_id, origin_mobile.to_s)
       assert_equal 200, response.http_code
 
       body = device_body($test_common_registration_id)
@@ -167,7 +163,7 @@ module JPush
     end
 
     def test_device_status
-      response = @devices.status($test_common_registration_id)
+      response = @@jpush.devices.status($test_common_registration_id)
       assert_equal 200, response.http_code
       assert_instance_of Hash, response.body
       assert_instance_of Array, response.body.first
@@ -176,7 +172,7 @@ module JPush
     private
 
       def device_body(registration_id)
-        @devices.show(registration_id).body
+        @@jpush.devices.show(registration_id).body
       end
 
       def tags_list_body

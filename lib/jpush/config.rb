@@ -2,29 +2,19 @@ module JPush
   module Config
     extend self
 
-    DEFAULT_OPTIONS = {
-      api_version: 'v3',
-      push_api_host: 'https://api.jpush.cn/',
-      device_api_host: 'https://device.jpush.cn/',
-      report_api_host: 'https://report.jpush.cn/',
-      valid_platform: ['android', 'ios']
-    }
-
-    attr_reader :settings
+    attr_reader :valid_platform
 
     def init(app_key, master_secret)
-      init_settings = InitSettings.new(app_key, master_secret)
-      @settings = init_settings.get_settings
+      options = {
+        api_version: 'v3',
+        push_api_host: 'https://api.jpush.cn/',
+        device_api_host: 'https://device.jpush.cn/',
+        report_api_host: 'https://report.jpush.cn/',
+        valid_platform: ['android', 'ios']
+      }
+      @valid_platform = options[:valid_platform]
+      @settings = options.merge!(app_key: app_key, master_secret: master_secret)
     end
 
-    class InitSettings
-      def initialize(app_key, master_secret)
-        @settings = DEFAULT_OPTIONS.merge!(app_key: app_key, master_secret: master_secret)
-      end
-
-      def get_settings
-        @settings
-      end
-    end
   end
 end

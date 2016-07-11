@@ -19,6 +19,9 @@ conf =
 $test_app_key = conf[:app_key]
 $test_master_secret = conf[:master_secret]
 
+$test_app_key_2 = conf[:app_key_2]
+$test_master_secret_2 = conf[:master_secret_2]
+
 $test_common_registration_id = conf[:registration_ids][:common]
 $test_common2_registration_id = conf[:registration_ids][:common2]
 $test_android_registration_id = conf[:registration_ids][:android]
@@ -30,6 +33,7 @@ $test_report_delay_time = conf[:report_delay_time].to_i
 class JPush::Test < MiniTest::Test
 
   @@jpush = JPush::Client.new($test_app_key, $test_master_secret)
+  @@jpush_2 = JPush::Client.new($test_app_key_2, $test_master_secret_2)
 
   def assert_true(statement)
     assert_equal true, statement
