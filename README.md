@@ -2,32 +2,28 @@
 
 # JPush API Ruby Client
 
-[![Build Status](https://travis-ci.org/jpush/jpush-api-ruby-client.svg?branch=master)](https://travis-ci.org/jpush/jpush-api-ruby-client)
-[![Gem Version](https://badge.fury.io/rb/jpush.svg)](https://badge.fury.io/rb/jpush)
+这是根据自己需求对极光官方 JPush REST API 进行修改，修改成可以同时推送（除了推送，其他功能有改了）给多个应用。
 
-这是 JPush REST API 的 Ruby 版本封装开发包，是由极光推送官方提供的，一般支持最新的 API 功能。
+调用方法如下：
 
-对应的 REST API 文档: http://docs.jpush.io/server/server_overview/
+```ruby
+  @jpush_1 = JPush::Client.new(app_key_1, master_secret_1)
+  @jpush_2 = JPush::Client.new(app_key_2, master_secret_2)
+  push_payload = Push::PushPayload.new(platform: 'all', audience: 'all', notification: 'hello from push api')
+  @jpush_1.pusher.push(push_payload)
+  @jpush_2.pusher.push(push_payload)
+```
+其他方法的调用也是用@jpush_1/@jpush_2来调用
 
-> 支持的 Ruby 版本：>= 2.2
+注：请不要将 @jpush_1.pusher 赋给某一变量， 因为每次@jpush_1都会给pusher传值，所以@jpush_1.pusher.push不要拆开
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'jpush'
-# OR
-gem 'jpush', git: 'https://github.com/jpush/jpush-api-ruby-client.git'
+gem 'jpush', github: 'linyunjiang/jpush-api-ruby-client'
 ```
-
-## Usage
-
-- [Getting Started](docs/Guides.md#getting-started)
-- [Push API](docs/Guides.md#push-api)
-- [Report API](docs/Guides.md#report-api)
-- [Schedule API](docs/Guides.md#schedule-api)
-- [Device API](docs/Guides.md#device-api)
 
 ## Development
 

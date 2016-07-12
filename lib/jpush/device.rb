@@ -11,7 +11,7 @@ module JPush
     # 获取当前设备的所有属性
     def show(registration_id)
       check_registration_id(registration_id)
-      url = @base_url + registration_id
+      url = "#{@base_url}#{registration_id}"
       Http::Client.get(@config_settings, url)
     end
 
@@ -38,7 +38,7 @@ module JPush
 
       raise Utils::Exceptions::JPushError, 'Devices update body can not be empty' if body.empty?
 
-      url = @base_url + registration_id
+      url = "#{@base_url}#{registration_id}"
       Http::Client.post(@config_settings, url, body: body)
     end
 
@@ -71,7 +71,7 @@ module JPush
     # POST /v3/devices/status/
     def status(registration_ids)
       registration_ids = build_registration_ids(registration_ids)
-      url = @base_url + 'status'
+      url = "#{@base_url}status"
       body = { registration_ids: registration_ids }
       Http::Client.post(@config_settings, url, body: body)
     end
@@ -102,7 +102,7 @@ module JPush
     def has_device?(tag_value, registration_id)
       check_registration_id(registration_id)
       check_tag(tag_value)
-      url = @base_url + "#{tag_value}/registration_ids/#{registration_id}"
+      url = "#{@base_url}#{tag_value}/registration_ids/#{registration_id}"
       Http::Client.get(@config_settings, url)
     end
 
@@ -118,7 +118,7 @@ module JPush
       raise Utils::Exceptions::JPushError, 'Tags update body can not be empty.' if registration_ids.empty?
 
       body = { registration_ids: registration_ids }
-      url = @base_url + tag_value
+      url = "#{@base_url}#{tag_value}"
       Http::Client.post(@config_settings, url, body: body)
     end
 
@@ -136,7 +136,7 @@ module JPush
     def delete(tag_value, platform = nil)
       check_tag(tag_value)
       params = platform.nil? ? nil : { platform: build_platform(platform) }
-      url = @base_url + tag_value
+      url = "#{@base_url}#{tag_value}"
       Http::Client.delete(@config_settings, url, params: params)
     end
 

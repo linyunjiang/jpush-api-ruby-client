@@ -14,7 +14,7 @@ module JPush
     # 送达统计
     def received(msg_ids)
       msg_ids = build_msg_ids(msg_ids)
-      url = @base_url + '/received'
+      url = "#{@base_url}/received"
       params = {
         msg_ids: msg_ids.join(',')
       }
@@ -25,7 +25,7 @@ module JPush
     # 消息统计
     def messages(msg_ids)
       msg_ids = build_msg_ids(msg_ids)
-      url = @base_url + '/messages'
+      url = "#{@base_url}/messages"
       params = {
         msg_ids: msg_ids.join(',')
       }
@@ -43,7 +43,7 @@ module JPush
         start: start,
         duration: duration
       }
-      url = @base_url + '/users'
+      url = "#{@base_url}/users"
       Http::Client.get(@config_settings, url, params: params)
     end
 
