@@ -15,7 +15,7 @@
 ```
 其他方法的调用也是用@jpush_1/@jpush_2来调用
 
-注：请不要将 @jpush_1.pusher 赋给某一变量， 因为每次@jpush_1都会给pusher传值，所以@jpush_1.pusher.push不要拆开
+注：请不要将 @jpush_1.pusher 赋给某一变量， @jpush_1.pusher.push不要拆开
 
 ## Installation
 
